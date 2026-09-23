@@ -205,8 +205,8 @@ export async function exportSignedPdf(options: ExportPdfOptions): Promise<Export
       const geo = computeEffectiveGeometry(pageNum, 'cachet', cachetConfig, variations);
       drawRotatedImage(newPage, embeddedCachetImage, geo, pageWidth, pageHeight);
       cachetLog = {
-        base: { x: cachetConfig.x, y: cachetConfig.y, width: cachetConfig.width, rotation: cachetConfig.rotation },
-        effective: { x: geo.effectiveX, y: geo.effectiveY, width: geo.effectiveWidth, rotation: geo.effectiveRotation },
+        base: { x: cachetConfig.x, y: cachetConfig.y, width: cachetConfig.width, rotation: cachetConfig.rotation, opacity: cachetConfig.opacity ?? 1 },
+        effective: { x: geo.effectiveX, y: geo.effectiveY, width: geo.effectiveWidth, rotation: geo.effectiveRotation, opacity: geo.opacity ?? 1 },
         variations: { deltaX: geo.deltaX, deltaY: geo.deltaY, deltaRot: geo.deltaRot, deltaScale: geo.deltaScale },
       };
     }
@@ -325,11 +325,14 @@ function drawRotatedImage(
   const drawX = cx + rx * Math.cos(rad) - ry * Math.sin(rad);
   const drawY = cy + rx * Math.sin(rad) + ry * Math.cos(rad);
 
+  const opacityVal = typeof geo.opacity === 'number' ? Math.max(0.05, Math.min(1, geo.opacity)) : 1;
+
   page.drawImage(img, {
     x: drawX,
     y: drawY,
     width: elemWidthPt,
     height: elemHeightPt,
     rotate: degrees(pdfAngle),
+    opacity: opacityVal,
   });
 }

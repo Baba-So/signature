@@ -667,6 +667,7 @@ export const InteractiveViewer: React.FC<InteractiveViewerProps> = ({
                 top: `${effectiveCachet.effectiveY}%`,
                 width: `${effectiveCachet.effectiveWidth}%`,
                 transform: `rotate(${effectiveCachet.effectiveRotation}deg)`,
+                opacity: effectiveCachet.opacity ?? 1,
                 zIndex: 25,
               }}
               className={`absolute select-none transition-shadow ${
@@ -681,10 +682,13 @@ export const InteractiveViewer: React.FC<InteractiveViewerProps> = ({
                 className="w-full h-auto pointer-events-none drop-shadow-xs"
                 draggable={false}
               />
-              {/* Overlay Badge for coordinates & rotation */}
+              {/* Overlay Badge for coordinates, rotation & opacity */}
               {(draggingItem === 'cachet' || activeElementTab === 'cachet') && (
                 <div className="absolute -top-6 left-0 whitespace-nowrap bg-red-600 text-white text-[9px] font-mono px-1.5 py-0.5 rounded-sm shadow-xs pointer-events-none">
                   Cachet {effectiveCachet.effectiveX.toFixed(1)}%, {effectiveCachet.effectiveY.toFixed(1)}% | {effectiveCachet.effectiveRotation.toFixed(0)}°
+                  {typeof effectiveCachet.opacity === 'number' && effectiveCachet.opacity < 1 && (
+                    <span> | {Math.round(effectiveCachet.opacity * 100)}%</span>
+                  )}
                 </div>
               )}
             </div>

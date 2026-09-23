@@ -16,6 +16,7 @@ import {
   AlignRight,
   Maximize2,
   Check,
+  Droplets,
 } from 'lucide-react';
 import { OverlayElementConfig, ControlledVariations } from '../types';
 
@@ -520,6 +521,35 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                 />
               </div>
             </div>
+
+            {/* Cachet / Tampon Opacity in Relative Tab */}
+            <div className="p-3 bg-red-50/40 rounded-lg border border-red-100 space-y-1.5 pt-2">
+              <div className="flex justify-between items-center text-[11px]">
+                <span className="text-slate-800 font-semibold flex items-center gap-1.5">
+                  <Droplets className="w-3.5 h-3.5 text-red-600" />
+                  Transparence & Opacité du cachet
+                </span>
+                <span className="font-mono font-bold text-red-700 bg-white px-1.5 py-0.5 rounded border border-red-200">
+                  {Math.round((cachetConfig.opacity ?? 1) * 100)}%
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="range"
+                  min="10"
+                  max="100"
+                  step="5"
+                  value={Math.round((cachetConfig.opacity ?? 1) * 100)}
+                  onChange={e => onUpdateCachet({ opacity: parseInt(e.target.value) / 100 })}
+                  className="w-full accent-red-600 cursor-pointer"
+                />
+              </div>
+              <div className="flex justify-between text-[10px] text-slate-500">
+                <span>10% (Très transparent)</span>
+                <span>85% (Encre naturelle)</span>
+                <span>100% (Plein / Opaque)</span>
+              </div>
+            </div>
           </div>
         )}
 
@@ -655,6 +685,123 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                 <span>22% (Diamètre officiel standard)</span>
                 <span>45% (Grand sceau d'entreprise)</span>
               </div>
+            </div>
+
+            {/* 3. Cachet / Tampon Opacity & Transparency Control */}
+            <div className="p-3 bg-gradient-to-br from-red-50/50 via-slate-50 to-amber-50/30 rounded-lg border border-red-100/90 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <Droplets className="w-3.5 h-3.5 text-red-600" />
+                  <span className="font-bold text-slate-900">Opacité & transparence du cachet</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] text-slate-500">
+                    {(cachetConfig.opacity ?? 1) >= 0.98
+                      ? 'Opaque (100%)'
+                      : (cachetConfig.opacity ?? 1) >= 0.8
+                      ? 'Encre naturelle'
+                      : (cachetConfig.opacity ?? 1) >= 0.6
+                      ? 'Transparence nette'
+                      : 'Filigrane léger'}
+                  </span>
+                  <span className="font-mono font-bold text-red-700 bg-white px-2 py-0.5 rounded border border-red-200 text-xs">
+                    {Math.round((cachetConfig.opacity ?? 1) * 100)}%
+                  </span>
+                </div>
+              </div>
+
+              {/* Slider with step buttons */}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() =>
+                    onUpdateCachet({
+                      opacity: Math.max(0.1, Math.round(((cachetConfig.opacity ?? 1) - 0.05) * 100) / 100),
+                    })
+                  }
+                  className="px-2 py-1 bg-white hover:bg-slate-100 border border-slate-200 rounded font-semibold text-slate-700 cursor-pointer"
+                  title="Diminuer l'opacité (plus transparent)"
+                >
+                  -
+                </button>
+                <input
+                  type="range"
+                  min="10"
+                  max="100"
+                  step="5"
+                  value={Math.round((cachetConfig.opacity ?? 1) * 100)}
+                  onChange={e => onUpdateCachet({ opacity: parseInt(e.target.value) / 100 })}
+                  className="w-full accent-red-600 cursor-pointer"
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    onUpdateCachet({
+                      opacity: Math.min(1.0, Math.round(((cachetConfig.opacity ?? 1) + 0.05) * 100) / 100),
+                    })
+                  }
+                  className="px-2 py-1 bg-white hover:bg-slate-100 border border-slate-200 rounded font-semibold text-slate-700 cursor-pointer"
+                  title="Augmenter l'opacité (plus opaque)"
+                >
+                  +
+                </button>
+              </div>
+
+              {/* Quick Preset Buttons */}
+              <div className="grid grid-cols-4 gap-1.5 pt-0.5">
+                <button
+                  type="button"
+                  onClick={() => onUpdateCachet({ opacity: 1.0 })}
+                  className={`py-1 px-1 text-center rounded border text-[11px] font-medium transition-colors cursor-pointer ${
+                    (cachetConfig.opacity ?? 1) === 1.0
+                      ? 'bg-red-600 text-white border-red-600 font-bold shadow-xs'
+                      : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
+                  }`}
+                  title="100% Opacité : Tampon plein et opaque"
+                >
+                  100% Opaque
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onUpdateCachet({ opacity: 0.85 })}
+                  className={`py-1 px-1 text-center rounded border text-[11px] font-medium transition-colors cursor-pointer ${
+                    Math.abs((cachetConfig.opacity ?? 1) - 0.85) < 0.03
+                      ? 'bg-red-600 text-white border-red-600 font-bold shadow-xs'
+                      : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
+                  }`}
+                  title="85% Opacité : Rendu encre naturelle très réaliste"
+                >
+                  85% Encre
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onUpdateCachet({ opacity: 0.7 })}
+                  className={`py-1 px-1 text-center rounded border text-[11px] font-medium transition-colors cursor-pointer ${
+                    Math.abs((cachetConfig.opacity ?? 1) - 0.7) < 0.03
+                      ? 'bg-red-600 text-white border-red-600 font-bold shadow-xs'
+                      : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
+                  }`}
+                  title="70% Opacité : Laisse transparaître le texte sous le cachet"
+                >
+                  70% Atténué
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onUpdateCachet({ opacity: 0.45 })}
+                  className={`py-1 px-1 text-center rounded border text-[11px] font-medium transition-colors cursor-pointer ${
+                    Math.abs((cachetConfig.opacity ?? 1) - 0.45) < 0.03
+                      ? 'bg-red-600 text-white border-red-600 font-bold shadow-xs'
+                      : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
+                  }`}
+                  title="45% Opacité : Effet filigrane discret"
+                >
+                  45% Filigrane
+                </button>
+              </div>
+
+              <p className="text-[10px] text-slate-500 leading-tight">
+                Permet au texte, tableaux ou lignes situés sous le tampon de rester lisibles à travers l’encre, comme un véritable cachet physique appliqué sur papier.
+              </p>
             </div>
           </div>
         )}

@@ -3,6 +3,7 @@ export interface OverlayElementConfig {
   y: number; // 0 to 100 (% of page height, top-left or reference)
   width: number; // % of page width (typically 10% to 50%)
   rotation: number; // -180 to 180 degrees
+  opacity?: number; // 0.1 to 1.0 (defaults to 1.0 for 100% opaque)
 }
 
 export interface PageOverlaySettings {
