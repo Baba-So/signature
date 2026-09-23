@@ -1,0 +1,6 @@
+{
+  "name": "Signature & Cachet Manager",
+  "description": "Application professionnelle pour apposer signature, cachet et en-tête sur documents PDF avec aperçu interactif en direct, variations contrôlées et piste d'audit.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
